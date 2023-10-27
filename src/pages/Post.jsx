@@ -37,8 +37,8 @@ export default function Post() {
       <Container>
         <div className="w-full flex justify-center mb-4 relative border rounded-xl p-2">
           <img
-            src={databaseService.getFilePreview(post.blog_img)}
-            alt={post.blog_title}
+            src={databaseService.getFilePreview(post?.blog_img)}
+            alt={post?.blog_title}
             className="rounded-xl"
           />
 
@@ -56,9 +56,9 @@ export default function Post() {
           )}
         </div>
         <div className="w-full mb-6">
-          <h1 className="text-2xl font-bold">{post.blog_title}</h1>
+          <h1 className="text-2xl font-bold">{post?.blog_title}</h1>
         </div>
-        <div className="browser-css">{parse(post.blog_title)}</div>
+        <div className="browser-css ">{parse(post?.blog_content)}</div>
       </Container>
     </div>
   ) : null;
