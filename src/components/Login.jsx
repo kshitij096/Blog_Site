@@ -19,6 +19,7 @@ const Login = () => {
       const session = await authService.login(data);
       if (session) {
         const userData = await authService.getCurrentUser();
+        // console.log(userData.$id);
         if (userData) dispatch(storeLogin(userData));
         navigate("/");
       }
