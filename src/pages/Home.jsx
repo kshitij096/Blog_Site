@@ -53,7 +53,7 @@ const Home = () => {
   return (
     <div className="w-full py-8 bg-orange-200">
       <Container>
-        <div className="flex flex-wrap flex-col sm:flex-row justify-center items-center sm:justify-start">
+        <div className="flex  flex-col sm:flex-row justify-center items-center sm:justify-start">
           {posts.map((post) => (
             <div key={post.$id} className="p-2 sm:w-1/4 w-3/4">
               <Link to="/login">
