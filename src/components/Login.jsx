@@ -5,6 +5,7 @@ import { Button, Input, Logo } from "./index";
 import { useDispatch } from "react-redux";
 import authService from "../appwrite/auth";
 import { useForm } from "react-hook-form";
+import toast, { Toaster } from "react-hot-toast";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -23,6 +24,29 @@ const Login = () => {
         if (userData) dispatch(storeLogin(userData));
         navigate("/");
       }
+      toast("Login Successfully", {
+        duration: 2000,
+        position: "top-center",
+
+        // Styling
+        style: {},
+        className: "",
+
+        // Custom Icon
+        icon: "🔐",
+
+        // Change colors of success/error/loading icon
+        iconTheme: {
+          primary: "#000",
+          secondary: "#fff",
+        },
+
+        // Aria
+        ariaProps: {
+          role: "status",
+          "aria-live": "polite",
+        },
+      });
     } catch (error) {
       setError(error.message);
     }
@@ -78,6 +102,7 @@ const Login = () => {
             <Button type="submit" className="w-full">
               Sign In
             </Button>
+            <Toaster />
           </div>
         </form>
       </div>

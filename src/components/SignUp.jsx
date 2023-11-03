@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button, Input, Logo } from "./index";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -22,6 +23,29 @@ const SignUp = () => {
         if (userData) dispatch(login(userData));
         navigate("/");
       }
+      toast("Signup Successfully", {
+        duration: 2000,
+        position: "top-center",
+
+        // Styling
+        style: {},
+        className: "",
+
+        // Custom Icon
+        icon: "✅",
+
+        // Change colors of success/error/loading icon
+        iconTheme: {
+          primary: "#000",
+          secondary: "#fff",
+        },
+
+        // Aria
+        ariaProps: {
+          role: "status",
+          "aria-live": "polite",
+        },
+      });
     } catch (error) {
       setError(error.message);
     }
@@ -84,6 +108,7 @@ const SignUp = () => {
             <Button type="submit" className="w-full ">
               Create Account
             </Button>
+            <Toaster />
           </div>
         </form>
       </div>

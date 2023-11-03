@@ -3,10 +3,12 @@ import databaseService from "../appwrite/dbconfig";
 import { Container, PostCard } from "../components";
 import SkeletonPostCard from "../components/skeleton/SkeletonPostCard";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
+import { useSelector } from "react-redux";
 
 const AllPosts = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const userData = useSelector((state) => state.auth.status);
 
   useEffect(() => {
     databaseService.getPosts().then((posts) => {
@@ -16,6 +18,20 @@ const AllPosts = () => {
       }
     });
   }, []);
+
+  if (posts?.length === 0) {
+    return (
+      <div className="w-full py-8 mt-0 text-center bg-gray-200">
+        <Container>
+          <div className="flex flex-wrap">
+            <h1 className="text-2xl font-bold hover:text-gray-500">
+              {userData && "No posts. Kindly Add a post "}
+            </h1>
+          </div>
+        </Container>
+      </div>
+    );
+  }
 
   const slideLeft = () => {
     var slider = document.getElementById("slider");

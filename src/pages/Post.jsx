@@ -34,10 +34,7 @@ export default function Post() {
     return (
       <div className="w-full py-8 mt-0 bg-gray-200">
         <Container>
-          <div className="flex flex-wrap">
-            <SkeletonPostCard />
-            <SkeletonPostCard />
-            <SkeletonPostCard />
+          <div className="flex flex-wrap justify-center items-center">
             <SkeletonPostCard />
           </div>
         </Container>
