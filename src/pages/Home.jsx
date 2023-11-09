@@ -10,15 +10,21 @@ const Home = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const userData = useSelector((state) => state.auth.status);
+  const [initialLoad, setInitialLoad] = useState(true); // Add this state to track the initial loading state
 
   useEffect(() => {
     databaseService.getPosts().then((posts) => {
       if (posts) {
         setPosts(posts.documents);
         setLoading(false);
+        setInitialLoad(false);
       }
     });
   }, []);
+
+  if (initialLoad) {
+    return null; // Return null while the initial loading is true to avoid displaying any content
+  }
 
   if (!userData) {
     return (
