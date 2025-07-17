@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import Logo from "../Logo";
 
 const Footer = () => {
+  let currentYear = new Date().getFullYear();
   return (
     <section className="relative overflow-hidden py-10 bg-teal-600 border-t-2 border-t-teal-300">
       <div className="relative z-10 mx-auto max-w-7xl px-4">
@@ -13,7 +14,7 @@ const Footer = () => {
               </div>
               <div>
                 <p className="text-sm text-teal-100">
-                  &copy; 2023. All Rights Reserved by Kshitij.
+                  &copy; {currentYear} All Rights Reserved by Kshitij.
                 </p>
               </div>
             </div>

@@ -16,18 +16,14 @@ export class AuthService {
 
   async createAccount({ email, password, name }) {
     try {
-      const userAccount = await this.account.create(
-        ID.unique(),
-        email,
-        password,
-        name
-      );
-      if (userAccount) {
-        //call another method
-        return this.login({ email, password });
-      } else {
-        return userAccount;
-      }
+      // const userAccount =
+      await this.account.create(ID.unique(), email, password, name);
+      // if (userAccount) {
+      //   //call another method
+      //   return this.login({ email, password });
+      // } else {
+      //   return userAccount;
+      // }
     } catch (error) {
       throw error;
     }
@@ -45,6 +41,12 @@ export class AuthService {
     try {
       return await this.account.get();
     } catch (error) {
+      if (
+        error?.type === "general_unauthorized_scope" ||
+        error?.message?.includes("missing scope")
+      ) {
+        return null;
+      }
       throw error;
     }
   }

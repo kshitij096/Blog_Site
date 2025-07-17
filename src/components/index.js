@@ -12,6 +12,8 @@ import Login from "./Login";
 import PostForm from "./post-form/PostForm";
 import PostCard from "./PostCard";
 import AuthLayout from "./AuthLayout";
+import Loader from "./Loader";
+import PostCarousel from "./PostCarousel";
 
 export {
   Header,
@@ -28,4 +30,6 @@ export {
   PostForm,
   PostCard,
   AuthLayout,
+  Loader,
+  PostCarousel,
 };

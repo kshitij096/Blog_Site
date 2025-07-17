@@ -1,107 +1,82 @@
 import { useEffect, useState } from "react";
-// import { Link } from "react-router-dom";
-import databaseService from "../appwrite/dbconfig";
-import { Container, PostCard } from "../components";
-import SkeletonPostCard from "../components/skeleton/SkeletonPostCard";
+import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { MdChevronLeft, MdChevronRight } from "react-icons/md";
+import databaseService from "../appwrite/dbconfig";
+import { Container, PostCard, Button } from "../components";
+import SkeletonPostCard from "../components/skeleton/SkeletonPostCard";
 
 const Home = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const userData = useSelector((state) => state.auth.status);
-  const [initialLoad, setInitialLoad] = useState(true); // Add this state to track the initial loading state
+  const userLoggedIn = useSelector((state) => state.auth.status);
 
   useEffect(() => {
-    databaseService.getPosts().then((posts) => {
-      if (posts) {
-        setPosts(posts.documents);
-        setLoading(false);
-        setInitialLoad(false);
+    const fetchPosts = async () => {
+      const response = await databaseService.getPosts();
+      if (response) {
+        setPosts(response.documents.slice(0, 3)); // Only first 3 posts
       }
-    });
+      setLoading(false);
+    };
+
+    fetchPosts();
   }, []);
 
-  if (initialLoad) {
-    return null; // Return null while the initial loading is true to avoid displaying any content
-  }
-
-  if (!userData) {
-    return (
-      <div className="w-full  py-8 mt-0 text-center bg-fuchsia-400">
-        <Container>
-          <div className="flex flex-wrap ">
-            <div className="p-2 w-full">
-              <h1 className="text-2xl font-bold hover:text-gray-500">
-                Login to read posts
-              </h1>
-            </div>
-          </div>
-        </Container>
-      </div>
-    );
-  }
-
-  if (posts?.length === 0) {
-    return (
-      <div className="w-full py-8 mt-0 text-center bg-gray-200">
-        <Container>
-          <div className="flex flex-wrap">
-            <h1 className="text-2xl font-bold hover:text-gray-500">
-              {userData && "No posts. Kindly Add a post "}
-            </h1>
-          </div>
-        </Container>
-      </div>
-    );
-  }
-
-  const slideLeft = () => {
-    var slider = document.getElementById("slider");
-    slider.scrollLeft = slider.scrollLeft - 500;
-  };
-  const slideRight = () => {
-    var slider = document.getElementById("slider");
-    slider.scrollLeft = slider.scrollLeft + 500;
-  };
-
   return (
-    <div className="w-full py-8 bg-orange-200">
-      {loading ? (
-        <Container>
-          <div className="flex flex-wrap">
-            <SkeletonPostCard />
-            <SkeletonPostCard />
-            <SkeletonPostCard />
-            <SkeletonPostCard />
-          </div>
-        </Container>
-      ) : (
-        <Container>
-          <div className="relative flex items-center group">
-            <MdChevronLeft
-              onClick={slideLeft}
-              className="bg-white left-0 rounded-full absolute opacity-50 hover:opacity-100 cursor-pointer z-10 hidden group-hover:block"
-              size={40}
-            />
-            <div
-              id={"slider"}
-              className="w-full flex h-full overflow-x-scroll whitespace-nowrap scroll-smooth scrollbar-hide relative"
-            >
-              {posts.map((post) => (
-                <div key={post.$id} className="p-2 sm:w-1/3">
-                  <PostCard {...post} />
-                </div>
-              ))}
-            </div>
-            <MdChevronRight
-              onClick={slideRight}
-              className="bg-white right-0 rounded-full absolute opacity-50 hover:opacity-100 cursor-pointer z-10 hidden group-hover:block"
-              size={40}
-            />
-          </div>
-        </Container>
+    <div className="bg-orange-100 w-full min-h-screen pt-8 pb-16">
+      {/* Banner for guests */}
+      {!userLoggedIn && (
+        <div className="bg-yellow-100 text-center py-3 mb-4">
+          <p className="text-sm text-gray-800">
+            Want to read full articles?{" "}
+            <Link to="/login" className="underline text-blue-600">
+              Login
+            </Link>{" "}
+            or{" "}
+            <Link to="/signup" className="underline text-blue-600">
+              Sign up
+            </Link>
+            .
+          </p>
+        </div>
       )}
+
+      <Container>
+        <h1 className="text-3xl font-bold text-center text-gray-800 mb-2">
+          Welcome to the Blog ✨
+        </h1>
+        <p className="text-center text-gray-600 mb-8 text-base">
+          Dive into featured posts curated just for you!
+        </p>
+
+        {/* Featured Posts */}
+        {loading ? (
+          <div className="flex flex-wrap justify-center">
+            <SkeletonPostCard />
+            <SkeletonPostCard />
+            <SkeletonPostCard />
+          </div>
+        ) : posts.length === 0 ? (
+          <div className="text-center py-10 text-gray-600 text-lg font-medium">
+            No posts available.
+          </div>
+        ) : (
+          <div className="flex flex-wrap justify-center">
+            {posts.map((post) => (
+              <div key={post.$id} className="p-2 w-full  md:w-1/3 lg:w-1/4">
+                <PostCard {...post} />
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* CTA Button */}
+        <div className="text-center mt-10">
+          <Link to="/all-posts">
+            <Button text="View All Posts" />
+          </Link>
+        </div>
+      </Container>
     </div>
   );
 };

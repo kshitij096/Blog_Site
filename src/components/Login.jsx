@@ -48,14 +48,18 @@ const Login = () => {
         },
       });
     } catch (error) {
-      setError(error.message);
+      if (error.message.includes("User not found")) {
+        setError("You are not signed up yet, please sign up first.");
+      } else {
+        setError(error.message);
+      }
     }
   };
 
   return (
     <div className="flex items-center justify-center w-full  bg-orange-300">
       <div
-        className={`mx-auto w-full max-w-lg bg-gray-100 rounded-xl my-6 p-10 border border-black/10`}
+        className={`mx-auto w-full max-w-lg bg-gray-100 rounded-xl my-6 mx-4 p-10 border border-black/10`}
       >
         <div className="mb-2 flex justify-center">
           <span className="inline-block w-full max -w-[100px]">
@@ -63,7 +67,7 @@ const Login = () => {
           </span>
         </div>
         <h2 className="text-center text-2xl font-bold leading-tight">
-          Sign in to your account
+          Login to your account
         </h2>
         <p className="mt-2 text-center text-base text-black/60">
           Don&apos;t have any account?&nbsp;
@@ -100,7 +104,7 @@ const Login = () => {
               })}
             />
             <Button type="submit" className="w-full">
-              Sign In
+              LogIn
             </Button>
             <Toaster />
           </div>

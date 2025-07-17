@@ -1,20 +1,29 @@
+import {
+  Client,
+  Databases,
+  Storage,
+  ID,
+  Query,
+  Permission,
+  Role,
+} from "appwrite";
 import config from "../config/config";
 
-import { Client, ID, Databases, Storage, Query } from "appwrite";
-
-export class dbService {
-  client = new Client();
+class DatabaseService {
+  client;
   databases;
   bucket;
 
   constructor() {
-    this.client
+    this.client = new Client()
       .setEndpoint(config.appwriteURL)
       .setProject(config.appwriteProjectId);
+
     this.databases = new Databases(this.client);
     this.bucket = new Storage(this.client);
   }
 
+  // CREATE POST
   async createPost({
     blog_title,
     slug,
@@ -22,6 +31,7 @@ export class dbService {
     blog_img,
     status,
     userID,
+    author_name,
   }) {
     try {
       return await this.databases.createDocument(
@@ -34,13 +44,25 @@ export class dbService {
           blog_img,
           status,
           userID,
-        }
+          author_name,
+        },
+        [
+          Permission.read(Role.any()), // public read
+          Permission.update(Role.user(userID)), // only owner can update
+          Permission.delete(Role.user(userID)), // only owner can delete
+        ]
       );
     } catch (error) {
-      console.log("Appwrite DB service :: createPost :: error", error);
+      console.error("createPost error:", error);
+      return null;
     }
   }
-  async updatePost(slug, { blog_title, blog_content, blog_img, status }) {
+
+  // UPDATE POST
+  async updatePost(
+    slug,
+    { blog_title, blog_content, blog_img, status, author_name }
+  ) {
     try {
       return await this.databases.updateDocument(
         config.appwriteDatabaseId,
@@ -51,12 +73,16 @@ export class dbService {
           blog_content,
           blog_img,
           status,
+          author_name,
         }
       );
     } catch (error) {
-      console.log("Appwrite DB service :: createPost :: error", error);
+      console.error("updatePost error:", error);
+      return null;
     }
   }
+
+  // DELETE POST
   async deletePost(slug) {
     try {
       await this.databases.deleteDocument(
@@ -66,11 +92,12 @@ export class dbService {
       );
       return true;
     } catch (error) {
-      console.log("Appwrite DB service :: createPost :: error", error);
+      console.error("deletePost error:", error);
       return false;
     }
   }
 
+  // GET SINGLE POST
   async getPost(slug) {
     try {
       return await this.databases.getDocument(
@@ -79,63 +106,61 @@ export class dbService {
         slug
       );
     } catch (error) {
-      console.log("Appwrite DB service :: createPost :: error", error);
-      return false;
+      console.error("getPost error:", error);
+      return null;
     }
   }
+
+  // GET POSTS WITH PAGINATION
   async getPosts(queries = [Query.equal("status", "active")]) {
     try {
       return await this.databases.listDocuments(
         config.appwriteDatabaseId,
         config.appwriteCollectionId,
         queries
-        // we can provide pagination like --
-        //100
-        //0
       );
     } catch (error) {
-      console.log("Appwrite DB service :: createPost :: error", error);
-      return false;
+      console.error("getPosts error:", error);
+      return null;
     }
   }
 
-  // File upload service section
-
+  // UPLOAD FILE
   async uploadFile(file) {
     try {
       return await this.bucket.createFile(
         config.appwriteBucketId,
         ID.unique(),
-        file
+        file,
+        [Permission.read(Role.any())] // public file access
       );
     } catch (error) {
-      console.log("Appwrite DB service :: createPost :: error", error);
-      return false;
+      console.error("uploadFile error:", error);
+      return null;
     }
   }
 
-  //File delete service section
-
+  // DELETE FILE
   async deleteFile(fileId) {
     try {
-      await this.bucket.deleteFile(
-        config.appwriteBucketId,
-
-        fileId
-      );
+      await this.bucket.deleteFile(config.appwriteBucketId, fileId);
       return true;
     } catch (error) {
-      console.log("Appwrite DB service :: createPost :: error", error);
+      console.error("deleteFile error:", error);
       return false;
     }
   }
 
-  // File Preview service section
-
+  // GET FILE PREVIEW LINK (.href is essential to avoid CORB)
   getFilePreview(fileId) {
-    return this.bucket.getFilePreview(config.appwriteBucketId, fileId);
+    return this.bucket.getFileDownload(config.appwriteBucketId, fileId);
+  }
+
+  // Export query helpers
+  get Query() {
+    return Query;
   }
 }
 
-const databaseService = new dbService();
+const databaseService = new DatabaseService();
 export default databaseService;

@@ -12,7 +12,11 @@ import Signup from "./pages/Signup.jsx";
 import EditPost from "./pages/EditPost.jsx";
 import Post from "./pages/Post.jsx";
 import AllPosts from "./pages/AllPosts.jsx";
+import MyPosts from "./pages/MyPost.jsx";
 import { AuthLayout, Login } from "./components/index.js";
+import { Toaster } from "react-hot-toast";
+
+<Toaster position="top-center" />;
 
 const router = createBrowserRouter([
   {
@@ -54,6 +58,15 @@ const router = createBrowserRouter([
           <AuthLayout authentication>
             {" "}
             <AddPost />
+          </AuthLayout>
+        ),
+      },
+      {
+        path: "/my-posts",
+        element: (
+          <AuthLayout authentication>
+            {" "}
+            <MyPosts />
           </AuthLayout>
         ),
       },

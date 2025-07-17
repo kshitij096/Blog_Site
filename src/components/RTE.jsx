@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 /* eslint-disable react/prop-types */
 import { Editor } from "@tinymce/tinymce-react";
 import { Controller } from "react-hook-form";
@@ -12,17 +13,16 @@ const RTE = ({ name, control, label, defaultValue = "" }) => {
         render={({ field: { onChange } }) => (
           <Editor
             initialValue={defaultValue}
+            // Added Tiny MCE Api key here bcz right from 2024 api key is required to add in Editior section
+            apiKey="e0cgwexxg2mbbbv6wfzjutdqllahfu6gb5nzk7wldl8azu0t"
             init={{
               height: 500,
               menubar: true,
               plugins: [
-                "a11ychecker",
                 "advlist",
-                "advcode",
-                "advtable",
+
                 "autolink",
-                "checklist",
-                "export",
+
                 "lists",
                 "link",
                 "image",
@@ -31,9 +31,7 @@ const RTE = ({ name, control, label, defaultValue = "" }) => {
                 "anchor",
                 "searchreplace",
                 "visualblocks",
-                "powerpaste",
                 "fullscreen",
-                "formatpainter",
                 "insertdatetime",
                 "media",
                 "table",
